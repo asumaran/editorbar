@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
 body {
-  font-family: "Inter", sans-serif; /* TODO: Reference webfont later */
+  font-family: "Inter Light", sans-serif; /* TODO: Reference webfont later */
   font-size: 1rem;
 }
