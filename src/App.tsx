@@ -1,6 +1,5 @@
 import PageBar from './components/PageBar';
 import PageBarItem from './components/PageBarItem';
-import PageSettingsMenu from './components/PageSettingsMenu';
 
 function App() {
   return (
@@ -11,7 +10,6 @@ function App() {
         <PageBarItem>Other</PageBarItem>
         <PageBarItem>Ending</PageBarItem>
       </PageBar>
-      <PageSettingsMenu></PageSettingsMenu>
     </div>
   );
 }
