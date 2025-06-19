@@ -9,6 +9,9 @@ import PageBarItem from '../PageBarItem';
 import {
   DndContext,
   DragOverlay,
+  PointerSensor,
+  useSensor,
+  useSensors,
   type DragEndEvent,
   type DragStartEvent,
   type UniqueIdentifier,
@@ -17,6 +20,7 @@ import { arrayMove, SortableContext } from '@dnd-kit/sortable';
 import { restrictToHorizontalAxis } from '@dnd-kit/modifiers';
 import PageBarItemOverlay from '../PageBarItem/PageBarItemOverlay';
 import PageBarItemBase from '../PageBarItem/PageBarItemBase';
+import AddPage from '../AddPage';
 
 interface Props {
   children: ReactElement<ComponentProps<typeof PageBarItem>>[];
@@ -25,29 +29,54 @@ interface Props {
 export default function PageBar({ children }: Props) {
   const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
   const [isDragging, setIsDragging] = useState(false);
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        delay: 0,
+        tolerance: 1,
+      },
+    })
+  );
 
-  const { initialItems, childrenMap } = useMemo(() => {
+  const { initialItems, childrenMap, renderOrder } = useMemo(() => {
     const childrenIds: string[] = [];
     const childrenMap: Record<
       string,
       ReactElement<ComponentProps<typeof PageBarItem>>
     > = {};
+    const renderOrder: Array<{
+      type: 'sortable' | 'static';
+      id: string;
+      element?: ReactElement;
+    }> = [];
 
     type PageBarItemElement = ReactElement<ComponentProps<typeof PageBarItem>>;
 
     // Generate stable IDs and create PageBarItemBase elements for each child
-    Children.forEach(children, (c: PageBarItemElement, index) => {
+    Children.forEach(children, (child: PageBarItemElement, index) => {
       const id = `pagebar-item-${index}`;
       childrenIds.push(id);
       const element = (
         <PageBarItemBase key={id} id={id}>
-          {c.props.children}
+          {child.props.children}
         </PageBarItemBase>
       );
       childrenMap[id] = element;
+      renderOrder.push({ type: 'sortable', id });
+
+      // Add AddPage component after each PageBarItem (except the last one)
+      if (index < children.length - 1) {
+        const addPageId = `addpage-${index}`;
+        const addPageElement = <AddPage key={addPageId} />;
+        renderOrder.push({
+          type: 'static',
+          id: addPageId,
+          element: addPageElement,
+        });
+      }
     });
 
-    return { initialItems: childrenIds, childrenMap };
+    return { initialItems: childrenIds, childrenMap, renderOrder };
   }, [children]); // Dependency on children to detect changes
 
   // Use lazy initialization to prevent state reset during HMR
@@ -64,17 +93,36 @@ export default function PageBar({ children }: Props) {
     });
   }, [initialItems]);
 
-  // Create ordered children based on current items order
-  const newChildren = items.map((id) => childrenMap[id]);
+  // Create ordered children with AddPage between PageBarItems
+  const createOrderedChildren = () => {
+    let sortableIndex = 0;
+
+    return renderOrder.map((item) => {
+      if (item.type === 'static') {
+        // Static AddPage components stay in their position
+        return item.element;
+      } else {
+        // Get the next sortable item from the reordered array
+        const sortableId = items[sortableIndex];
+        sortableIndex++;
+        return childrenMap[sortableId];
+      }
+    });
+  };
+
+  const orderedChildren = createOrderedChildren();
 
   return (
     <DndContext
       modifiers={[restrictToHorizontalAxis]}
       onDragEnd={handleDragEnd}
       onDragStart={handleDragStart}
+      sensors={sensors}
     >
       <SortableContext items={items}>
-        <div className='border flex gap-3 p-2 rounded-md'>{newChildren}</div>
+        <div className='border flex gap-3 p-2 rounded-md'>
+          {orderedChildren}
+        </div>
       </SortableContext>
       <DragOverlay>
         {isDragging && activeId ? (

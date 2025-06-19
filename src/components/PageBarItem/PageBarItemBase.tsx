@@ -27,13 +27,18 @@ export default function PageBarItemBase({ children, id }: Props) {
       ref={setNodeRef}
       style={style}
       className={classNames(
-        'border px-5 py-1 rounded-md bg-white',
+        'inline-block w-[100px] border px-5 py-1 rounded-md bg-white',
         isDragging ? 'opacity-0 z-0' : ''
       )}
       {...attributes}
       {...listeners}
+      onClick={handleOnClick}
     >
       {children}
     </div>
   );
+
+  function handleOnClick() {
+    console.log('PageBarItemBase - handleOnClick');
+  }
 }

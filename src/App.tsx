@@ -8,6 +8,9 @@ function App() {
         <PageBarItem>item 1</PageBarItem>
         <PageBarItem>item 2</PageBarItem>
         <PageBarItem>item 3</PageBarItem>
+        <PageBarItem>item 4</PageBarItem>
+        <PageBarItem>item 5</PageBarItem>
+        <PageBarItem>item 6</PageBarItem>
       </PageBar>
     </div>
   );
