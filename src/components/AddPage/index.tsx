@@ -1,8 +1,10 @@
 import classNames from 'classnames';
 import { Plus } from 'lucide-react';
 import { useRef, useState } from 'react';
+import useAppContext from '../../hooks/useAppContext';
 
-export default function AddPage() {
+export default function AddPage({ at }: { at: number }) {
+  const { setPages } = useAppContext();
   const parentRef = useRef<HTMLDivElement>(null);
   const [isHovered, setHovered] = useState(false); // Controls visibility
   const [hiding, setHiding] = useState(false);
@@ -53,6 +55,20 @@ export default function AddPage() {
   );
 
   function handleOnClick() {
-    console.log('Add Page click');
+    // Remove immediately to avoid flicker after the page has been added
+    setHovered(false);
+    setHiding(true);
+
+    setPages((p) => {
+      const id = Number(`${Date.now()}${Math.floor(Math.random() * 1000)}`);
+      const newPage = { id: id, label: 'Other' };
+
+      // Insert newPage after the index 'at'
+      return [
+        ...p.slice(0, at + 1), // Elements from 0 to at (inclusive)
+        newPage, // New page
+        ...p.slice(at + 1), // Elements from at+1 to end
+      ];
+    });
   }
 }

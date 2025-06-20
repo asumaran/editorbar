@@ -1,15 +1,24 @@
 import PageBar from './components/PageBar';
-import PageBarItem from './components/PageBarItem';
+
+const pages = [
+  {
+    id: 1,
+    label: 'Info',
+  },
+  {
+    id: 2,
+    label: 'Details',
+  },
+  {
+    id: 3,
+    label: 'Ending',
+  },
+];
 
 function App() {
   return (
     <div className='flex items-center justify-center h-screen'>
-      <PageBar>
-        <PageBarItem>Info</PageBarItem>
-        <PageBarItem>Details</PageBarItem>
-        <PageBarItem>Other</PageBarItem>
-        <PageBarItem>Ending</PageBarItem>
-      </PageBar>
+      <PageBar initialPages={pages} />
     </div>
   );
 }
