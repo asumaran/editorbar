@@ -4,7 +4,7 @@ import type { ReactNode } from 'react';
 
 export default function PageSettingsMenu() {
   return (
-    <div className='w-64 rounded-xl border overflow-hidden border-gray-200 bg-white shadow-xs'>
+    <div className='w-50 rounded-xl border overflow-hidden border-gray-200 bg-white shadow-xs'>
       <div className='bg-[#FAFBFC]'>
         <h3 className='p-[12px] font-[BL_Melody]  text-[16px]/[1] font-medium border-b-gray-200 border-b-1 text-gray-800'>
           Settings

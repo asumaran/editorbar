@@ -1,6 +1,14 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 body {
-  font-family: "Inter Light", sans-serif; /* TODO: Reference webfont later */
+  font-family: 'Inter Light', sans-serif; /* TODO: Reference webfont later */
   font-size: 14px;
+}
+
+.add-page .add-page-inner {
+  display: none;
+}
+
+.add-page.onHover .add-page-inner {
+  display: block;
 }

@@ -32,7 +32,7 @@ export default function PageBar({ children }: Props) {
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
-        delay: 250,
+        delay: 150,
         tolerance: 5,
       },
     })
@@ -120,7 +120,7 @@ export default function PageBar({ children }: Props) {
       sensors={sensors}
     >
       <SortableContext items={items}>
-        <div className='border border-gray-200 flex gap-3 p-2 rounded-md'>
+        <div className='border border-gray-200 flex py-2.5 px-3 rounded-lg'>
           {orderedChildren}
         </div>
       </SortableContext>
