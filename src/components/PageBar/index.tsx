@@ -11,7 +11,6 @@ import {
 } from '@dnd-kit/core';
 import { arrayMove, SortableContext } from '@dnd-kit/sortable';
 import { restrictToHorizontalAxis } from '@dnd-kit/modifiers';
-import PageBarItemOverlay from '../PageBarItem/PageBarItemOverlay';
 import AddPage from '../AddPage';
 import useAppContext from '../../hooks/useAppContext';
 import type { Page } from '../../context/AppContext';
@@ -81,9 +80,7 @@ export default function PageBar({ initialPages }: Props) {
       </SortableContext>
       <DragOverlay>
         {isDragging && activePage && activeId ? (
-          <PageBarItemOverlay id={activePage.id}>
-            {activePage.label}
-          </PageBarItemOverlay>
+          <PageBarItem id={activePage.id}>{activePage.label}</PageBarItem>
         ) : null}
       </DragOverlay>
     </DndContext>
