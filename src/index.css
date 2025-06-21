@@ -12,3 +12,14 @@ body {
 .add-page.onHover .add-page-inner {
   display: block;
 }
+
+@layer base {
+  button,
+  [role='button'] {
+    cursor: pointer;
+  }
+  button:disabled,
+  [role='button']:disabled {
+    cursor: default;
+  }
+}
