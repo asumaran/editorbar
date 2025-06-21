@@ -1,6 +1,6 @@
 import { type ReactNode } from 'react';
-import PageBarItemBase from './PageBarItemBase';
 import type { UniqueIdentifier } from '@dnd-kit/core';
+import PageBarItem from '.';
 
 interface Props {
   children: ReactNode;
@@ -9,5 +9,5 @@ interface Props {
 
 // TODO: Use a better name maybe?
 export default function PageBarItemOverlay({ children, id }: Props) {
-  return <PageBarItemBase id={id}>{children}</PageBarItemBase>;
+  return <PageBarItem id={id}>{children}</PageBarItem>;
 }

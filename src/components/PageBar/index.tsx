@@ -12,11 +12,11 @@ import {
 import { arrayMove, SortableContext } from '@dnd-kit/sortable';
 import { restrictToHorizontalAxis } from '@dnd-kit/modifiers';
 import PageBarItemOverlay from '../PageBarItem/PageBarItemOverlay';
-import PageBarItemBase from '../PageBarItem/PageBarItemBase';
 import AddPage from '../AddPage';
 import useAppContext from '../../hooks/useAppContext';
 import type { Page } from '../../context/AppContext';
 import AddPageButton from '../AddPageButton';
+import PageBarItem from '../PageBarItem';
 
 interface Props {
   initialPages: Page[];
@@ -45,9 +45,9 @@ export default function PageBar({ initialPages }: Props) {
     pages.forEach((page, index) => {
       // Add the PageBarItem
       items.push(
-        <PageBarItemBase key={page.id} id={page.id}>
+        <PageBarItem key={page.id} id={page.id}>
           {page.label}
-        </PageBarItemBase>
+        </PageBarItem>
       );
 
       items.push(<AddPage at={index} key={`addpage-${index}`} />);
