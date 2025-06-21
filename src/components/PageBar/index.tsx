@@ -1,6 +1,5 @@
 import { useState, useMemo, useEffect, type ReactNode } from 'react';
 import {
-  closestCenter,
   DndContext,
   DragOverlay,
   PointerSensor,
