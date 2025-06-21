@@ -14,7 +14,7 @@ export default function AddPage({ at }: { at: number }) {
     <div
       className={classNames(
         'flex items-center group px-2.5',
-        isHovered ? ' onHover ' : '',
+        isHovered ? ' onHover px-5' : '',
         hiding ? ' onHide ' : ''
       )}
       ref={parentRef}
@@ -44,7 +44,7 @@ export default function AddPage({ at }: { at: number }) {
       <div className='hidden group-[.onHover]:block'>
         <button
           onClick={handleOnClick}
-          className='border border-[#E1E1E1] rounded-full w-4 h-4'
+          className='border border-[rgb(225,225,225)] hover:border-[rgb(217,220,225)] hover:text-[rgb(47,114,226)] bg-white rounded-full w-4 h-4'
         >
           <span className='flex items-center justify-center'>
             <Plus className='w-2.5 h-2.5' />

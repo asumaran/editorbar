@@ -66,9 +66,17 @@ export default function PageBar({ initialPages }: Props) {
       sensors={sensors}
     >
       <SortableContext items={pages}>
-        <div className='border border-gray-200 bg-[rgb(249,250,251)] flex py-4 px-5 rounded-lg'>
-          {barItemsWithAddPage}
-          <AddPageButton variant='light' onClick={handleAddPageClick} />
+        <div className='border border-gray-200 bg-[rgb(249,250,251)]  rounded-lg'>
+          <div className='foo flex py-4 px-5 relative'>
+            {/* Dashed line */}
+            <div className='absolute top-1/2 left-5 right-5 h-px border-t border-dashed border-[rgb(192,192,192)] z-0'></div>
+
+            {/* Content */}
+            <div className='relative z-10 flex w-full'>
+              {barItemsWithAddPage}
+              <AddPageButton variant='light' onClick={handleAddPageClick} />
+            </div>
+          </div>
         </div>
       </SortableContext>
       <DragOverlay>
