@@ -2,9 +2,6 @@ import { useState, useMemo, useEffect, type ReactNode } from 'react';
 import {
   DndContext,
   DragOverlay,
-  PointerSensor,
-  useSensor,
-  useSensors,
   type DragEndEvent,
   type DragStartEvent,
   type UniqueIdentifier,
@@ -29,14 +26,6 @@ export default function PageBar({ initialPages }: Props) {
   const { pages, setPages } = useAppContext();
   const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
   const [isDragging, setIsDragging] = useState(false);
-  const sensors = useSensors(
-    useSensor(PointerSensor, {
-      activationConstraint: {
-        delay: 150,
-        tolerance: 5,
-      },
-    })
-  );
 
   useEffect(() => {
     setPages(initialPages);
@@ -66,7 +55,6 @@ export default function PageBar({ initialPages }: Props) {
       modifiers={[restrictToHorizontalAxis]}
       onDragEnd={handleDragEnd}
       onDragStart={handleDragStart}
-      sensors={sensors}
     >
       <SortableContext items={pages} strategy={horizontalListSortingStrategy}>
         <div className='border border-gray-200 bg-[rgb(249,250,251)]  rounded-lg'>

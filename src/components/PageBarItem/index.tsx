@@ -4,7 +4,7 @@ import {
   useSortable,
   type AnimateLayoutChanges,
 } from '@dnd-kit/sortable';
-import { useRef, useState, type ReactNode } from 'react';
+import { useRef, useState, type MouseEvent, type ReactNode } from 'react';
 import type { UniqueIdentifier } from '@dnd-kit/core';
 import { EllipsisVertical, FileText } from 'lucide-react';
 import MenuPortal from '../PageSettingsMenu/MenuPortal';
@@ -45,7 +45,7 @@ export default function PageBarItem({ children, id }: Props) {
         className={cx(isDragging ? 'opacity-0 z-0' : '')}
         {...attributes}
         {...listeners}
-        onClick={handleOnClick}
+        onContextMenu={handleOnContextMenu}
       >
         <FileText
           color={isActive ? 'rgb(245,157,14)' : 'currentColor'}
@@ -59,18 +59,19 @@ export default function PageBarItem({ children, id }: Props) {
       <MenuPortal
         isOpen={isActive}
         buttonRef={buttonRef}
-        onClose={closeDropdown}
+        onClose={handleOnCloseDropdown}
       >
         <PageSettingsMenu />
       </MenuPortal>
     </div>
   );
 
-  function handleOnClick() {
+  function handleOnContextMenu(e: MouseEvent<HTMLButtonElement>) {
+    e.preventDefault();
     setIsActive((p) => !p);
   }
 
-  function closeDropdown() {
+  function handleOnCloseDropdown() {
     setIsActive(false);
   }
 }

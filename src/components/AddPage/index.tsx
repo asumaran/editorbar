@@ -9,13 +9,7 @@ export default function AddPage({ at }: { at: number }) {
   const [isHovered, setHovered] = useState(false); // Controls visibility
   const [hiding, setHiding] = useState(false);
   const timeoutRef = useRef<number | null>(null);
-  console.log(
-    cx(
-      'flex items-center group px-2.5',
-      isHovered ? ' onHover px-5' : '',
-      hiding ? ' onHide ' : ''
-    )
-  );
+
   return (
     <div
       className={cx(
