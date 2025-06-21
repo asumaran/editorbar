@@ -1,11 +1,12 @@
 import { CSS } from '@dnd-kit/utilities';
 import { useSortable } from '@dnd-kit/sortable';
-import classNames from 'classnames';
 import { useRef, useState, type ReactNode } from 'react';
 import type { UniqueIdentifier } from '@dnd-kit/core';
 import { EllipsisVertical, FileText } from 'lucide-react';
 import MenuPortal from '../PageSettingsMenu/MenuPortal';
 import PageSettingsMenu from '../PageSettingsMenu';
+import Button from '../Button';
+import { cx } from 'class-variance-authority';
 
 interface Props {
   children: ReactNode;
@@ -28,30 +29,25 @@ export default function PageBarItemBase({ children, id }: Props) {
   const style = { transform: CSS.Transform.toString(transform), transition };
   return (
     <div className='relative' ref={buttonRef}>
-      <button
+      <Button
         key={id}
         id={String(id)}
         ref={setNodeRef}
         style={style}
-        className={classNames(
-          'text-[#677289] bg-[#F0F1F3] border-[#F0F1F3] hover:bg-[rgb(221,223,228)] hover:border-[rgb(221,223,228)] select-none border px-3 pl-2 py-1 rounded-lg',
-          isDragging ? 'opacity-0 z-0' : '',
-          isActive ? 'bg-white active:bg-white pr-1' : ''
-        )}
+        className={cx(isDragging ? 'opacity-0 z-0' : '')}
         {...attributes}
         {...listeners}
         onClick={handleOnClick}
       >
-        <span className='flex items-center gap-1'>
-          <span>
-            <FileText height={16} />
-          </span>
-          <span>{children}</span>
-          <span className={isActive ? 'block' : 'hidden'}>
-            <EllipsisVertical height={16} color='#9DA4B2' />
-          </span>
+        <FileText
+          color={isActive ? 'rgb(245,157,14)' : 'currentColor'}
+          width={15}
+        />
+        <span>{children}</span>
+        <span className={isActive ? 'block' : 'hidden'}>
+          <EllipsisVertical width={16} height={16} color='#9DA4B2' />
         </span>
-      </button>
+      </Button>
       <MenuPortal
         isOpen={isActive}
         buttonRef={buttonRef}

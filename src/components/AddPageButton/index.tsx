@@ -10,11 +10,8 @@ export default function AddPageButton({
 }) {
   return (
     <div>
-      <Button
-        onClick={onClick}
-        variant={variant}
-        icon={<Plus className='w-4 h-4' />}
-      >
+      <Button onClick={onClick} variant={variant}>
+        <Plus className='w-4 h-4' />
         Add page
       </Button>
     </div>

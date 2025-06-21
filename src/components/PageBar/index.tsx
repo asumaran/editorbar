@@ -66,7 +66,7 @@ export default function PageBar({ initialPages }: Props) {
       sensors={sensors}
     >
       <SortableContext items={pages}>
-        <div className='border border-gray-200 flex py-2.5 px-3 rounded-lg'>
+        <div className='border border-gray-200 bg-[rgb(249,250,251)] flex py-4 px-5 rounded-lg'>
           {barItemsWithAddPage}
           <AddPageButton variant='light' onClick={handleAddPageClick} />
         </div>
