@@ -16,6 +16,7 @@ import PageBarItemBase from '../PageBarItem/PageBarItemBase';
 import AddPage from '../AddPage';
 import useAppContext from '../../hooks/useAppContext';
 import type { Page } from '../../context/AppContext';
+import AddPageButton from '../AddPageButton';
 
 interface Props {
   initialPages: Page[];
@@ -49,10 +50,7 @@ export default function PageBar({ initialPages }: Props) {
         </PageBarItemBase>
       );
 
-      // Add AddPage component between items (not after the last one)
-      if (index < pages.length - 1) {
-        items.push(<AddPage at={index} key={`addpage-${index}`} />);
-      }
+      items.push(<AddPage at={index} key={`addpage-${index}`} />);
     });
 
     return items;
@@ -70,6 +68,7 @@ export default function PageBar({ initialPages }: Props) {
       <SortableContext items={pages}>
         <div className='border border-gray-200 flex py-2.5 px-3 rounded-lg'>
           {barItemsWithAddPage}
+          <AddPageButton variant='light' onClick={handleAddPageClick} />
         </div>
       </SortableContext>
       <DragOverlay>
@@ -81,6 +80,14 @@ export default function PageBar({ initialPages }: Props) {
       </DragOverlay>
     </DndContext>
   );
+
+  function handleAddPageClick() {
+    setPages((p) => {
+      const id = Number(`${Date.now()}${Math.floor(Math.random() * 1000)}`);
+      const newPage = { id: id, label: 'Other' };
+      return [...p, newPage];
+    });
+  }
 
   function handleDragStart(event: DragStartEvent) {
     const { active } = event;
