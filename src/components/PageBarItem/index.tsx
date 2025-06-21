@@ -1,5 +1,9 @@
 import { CSS } from '@dnd-kit/utilities';
-import { useSortable } from '@dnd-kit/sortable';
+import {
+  defaultAnimateLayoutChanges,
+  useSortable,
+  type AnimateLayoutChanges,
+} from '@dnd-kit/sortable';
 import { useRef, useState, type ReactNode } from 'react';
 import type { UniqueIdentifier } from '@dnd-kit/core';
 import { EllipsisVertical, FileText } from 'lucide-react';
@@ -17,6 +21,10 @@ export default function PageBarItem({ children, id }: Props) {
   const [isActive, setIsActive] = useState<boolean>();
   const buttonRef = useRef<HTMLDivElement>(null);
 
+  // TODO: This might be used to animate insert/delete items
+  const animateLayoutChanges: AnimateLayoutChanges = (args) =>
+    defaultAnimateLayoutChanges({ ...args, wasDragging: true });
+
   const {
     attributes,
     listeners,
@@ -24,7 +32,7 @@ export default function PageBarItem({ children, id }: Props) {
     transform,
     transition,
     isDragging,
-  } = useSortable({ id });
+  } = useSortable({ id, animateLayoutChanges });
 
   const style = { transform: CSS.Transform.toString(transform), transition };
   return (

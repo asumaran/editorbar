@@ -1,5 +1,6 @@
 import { useState, useMemo, useEffect, type ReactNode } from 'react';
 import {
+  closestCenter,
   DndContext,
   DragOverlay,
   PointerSensor,
@@ -9,7 +10,11 @@ import {
   type DragStartEvent,
   type UniqueIdentifier,
 } from '@dnd-kit/core';
-import { arrayMove, SortableContext } from '@dnd-kit/sortable';
+import {
+  arrayMove,
+  horizontalListSortingStrategy,
+  SortableContext,
+} from '@dnd-kit/sortable';
 import { restrictToHorizontalAxis } from '@dnd-kit/modifiers';
 import AddPage from '../AddPage';
 import useAppContext from '../../hooks/useAppContext';
@@ -64,7 +69,7 @@ export default function PageBar({ initialPages }: Props) {
       onDragStart={handleDragStart}
       sensors={sensors}
     >
-      <SortableContext items={pages}>
+      <SortableContext items={pages} strategy={horizontalListSortingStrategy}>
         <div className='border border-gray-200 bg-[rgb(249,250,251)]  rounded-lg'>
           <div className='foo flex py-4 px-5 relative'>
             {/* Dashed line */}
