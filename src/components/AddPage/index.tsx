@@ -1,7 +1,7 @@
-import classNames from 'classnames';
 import { Plus } from 'lucide-react';
 import { useRef, useState } from 'react';
 import useAppContext from '../../hooks/useAppContext';
+import { cx } from 'class-variance-authority';
 
 export default function AddPage({ at }: { at: number }) {
   const { setPages } = useAppContext();
@@ -9,10 +9,16 @@ export default function AddPage({ at }: { at: number }) {
   const [isHovered, setHovered] = useState(false); // Controls visibility
   const [hiding, setHiding] = useState(false);
   const timeoutRef = useRef<number | null>(null);
-
+  console.log(
+    cx(
+      'flex items-center group px-2.5',
+      isHovered ? ' onHover px-5' : '',
+      hiding ? ' onHide ' : ''
+    )
+  );
   return (
     <div
-      className={classNames(
+      className={cx(
         'flex items-center group px-2.5',
         isHovered ? ' onHover px-5' : '',
         hiding ? ' onHide ' : ''

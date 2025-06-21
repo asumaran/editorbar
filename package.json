@@ -15,7 +15,6 @@
     "@dnd-kit/sortable": "^10.0.0",
     "@tailwindcss/vite": "^4.1.10",
     "class-variance-authority": "^0.7.1",
-    "classnames": "^2.5.1",
     "lucide-react": "^0.517.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",

@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import { cx } from 'class-variance-authority';
 import { Flag, Pencil, Trash, CopyIcon, Clipboard } from 'lucide-react';
 import type { ReactNode } from 'react';
 
@@ -53,7 +53,7 @@ function PageSettingsMenuItem({
 }) {
   return (
     <div
-      className={classNames(
+      className={cx(
         'rounded-md px-2.5 py-1 text-sm font-medium select-none will-change-auto',
         color === 'gray'
           ? 'text-gray-700 hover:bg-gray-100 active:bg-gray-200' // Regular
