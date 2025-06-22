@@ -7,7 +7,7 @@ import {
 import { useRef, useState, type MouseEvent, type ReactNode } from 'react';
 import type { UniqueIdentifier } from '@dnd-kit/core';
 import { EllipsisVertical, FileText } from 'lucide-react';
-import MenuPortal from '../PageSettingsMenu/MenuPortal';
+import MenuPortal from '../MenuPortal';
 import PageSettingsMenu from '../PageSettingsMenu';
 import Button from '../Button';
 import { cx } from 'class-variance-authority';

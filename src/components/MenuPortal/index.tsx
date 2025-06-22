@@ -6,7 +6,7 @@ import {
   type ComponentProps,
   type ReactElement,
 } from 'react';
-import type PageSettingsMenu from '.';
+import type PageSettingsMenu from '../PageSettingsMenu';
 import { createPortal } from 'react-dom';
 
 interface Props {
