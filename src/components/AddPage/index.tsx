@@ -10,41 +10,61 @@ export default function AddPage({ at }: { at: number }) {
   const [hiding, setHiding] = useState(false);
   const timeoutRef = useRef<number | null>(null);
 
+  const showWithDelay = (delay: number = 0) => {
+    // Clear previous timeout if it exists
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+
+    if (delay > 0) {
+      // Apply setHovered after delay to prevent flickering when moving between buttons
+      timeoutRef.current = setTimeout(() => {
+        setHovered(true);
+        setHiding(false);
+      }, delay);
+    } else {
+      // Apply immediately for focus events
+      setHovered(true);
+      setHiding(false);
+    }
+  };
+
+  const hideWithDelay = (delay: number = 0) => {
+    // Clear timeout when leaving hover/focus
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+
+    if (delay > 0) {
+      // Hide after delay, allowing user to return without flickering
+      timeoutRef.current = setTimeout(() => {
+        setHovered(false);
+        setHiding(true);
+      }, delay);
+    } else {
+      // Hide immediately for blur events
+      setHovered(false);
+      setHiding(true);
+    }
+  };
+
   return (
     <div
       className={cx(
-        'flex items-center group px-2.5',
-        isHovered ? ' onHover px-5' : '',
-        hiding ? ' onHide ' : ''
+        'flex items-center justify-center group px-2.5 transition-[width] duration-500 ease-out  ',
+        isHovered ? ' onHover w-[56px]' : 'w-0',
+        hiding ? ' onHide ' : 'w-0'
       )}
       ref={parentRef}
-      onMouseEnter={() => {
-        // Clear previous timeout if it exists
-        if (timeoutRef.current) {
-          clearTimeout(timeoutRef.current);
-        }
-        // Apply setHovered after 300ms to prevent flickering when moving between buttons
-        timeoutRef.current = setTimeout(() => {
-          setHovered(true);
-          setHiding(false);
-        }, 300);
-      }}
-      onMouseLeave={() => {
-        // Clear timeout when leaving hover
-        if (timeoutRef.current) {
-          clearTimeout(timeoutRef.current);
-        }
-        // Hide after 300ms delay, allowing user to return without flickering
-        timeoutRef.current = setTimeout(() => {
-          setHovered(false);
-          setHiding(true);
-        }, 300);
-      }}
+      onMouseEnter={() => showWithDelay(300)}
+      onMouseLeave={() => hideWithDelay(100)}
     >
-      <div className='hidden group-[.onHover]:block'>
+      <div className='flex items-center justify-center'>
         <button
           onClick={handleOnClick}
-          className='border border-[rgb(225,225,225)] hover:border-[rgb(217,220,225)] hover:text-[rgb(47,114,226)] bg-white rounded-full w-4 h-4'
+          onFocus={() => showWithDelay()}
+          onBlur={() => hideWithDelay()}
+          className='border border-[rgb(225,225,225)] hover:border-[rgb(217,220,225)] hover:text-[rgb(47,114,226)] bg-white rounded-full w-4 h-4 scale-0 group-[.onHover]:scale-120 transition-transform duration-300 ease-out focus:outline-none focus:border-[rgb(47,114,226)] focus:ring-2 focus:ring-blue-500/20'
         >
           <span className='flex items-center justify-center'>
             <Plus className='w-2.5 h-2.5' />
