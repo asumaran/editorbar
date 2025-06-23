@@ -1,5 +1,6 @@
 import { useState, useMemo, useEffect, type ReactNode } from 'react';
 import {
+  closestCenter,
   DndContext,
   DragOverlay,
   type DragEndEvent,
@@ -55,6 +56,7 @@ export default function PageBar({ initialPages }: Props) {
       modifiers={[restrictToHorizontalAxis]}
       onDragEnd={handleDragEnd}
       onDragStart={handleDragStart}
+      collisionDetection={closestCenter}
     >
       <SortableContext items={pages} strategy={horizontalListSortingStrategy}>
         <div className='border border-gray-200 bg-[rgb(249,250,251)]  rounded-lg'>
