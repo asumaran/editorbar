@@ -2,7 +2,7 @@ import { cva, cx, type VariantProps } from 'class-variance-authority';
 import type { ComponentProps, ReactNode } from 'react';
 
 const buttonVariants = cva(
-  'px-2.5 h-8 border rounded-lg transition-colors focus:outline-none focus:border-[rgb(47,114,226)] focus:ring-2 focus:ring-blue-500/20 focus:bg-white active:ring-0 bg-clip-padding',
+  'select-none px-2.5 h-8 border rounded-lg transition-colors focus:outline-none focus:border-[rgb(47,114,226)] focus:ring-2 focus:ring-blue-500/20 focus:bg-white active:ring-0 bg-clip-padding',
   {
     variants: {
       variant: {
