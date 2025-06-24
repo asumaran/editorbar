@@ -129,7 +129,8 @@ export default function PageBarItem({ children, id, index }: Props) {
             id={String(id)}
             key={id}
             onContextMenu={handleOnContextMenu}
-            onPointerDown={handlePointerDown} // Custom handler
+            onPointerDown={handlePointerDown}
+            variant={isActive ? 'active' : 'default'}
           >
             <FileText
               key={1}

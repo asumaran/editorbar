@@ -10,6 +10,8 @@ const buttonVariants = cva(
           'bg-[rgb(235,237,240)] border-[rgb(235,237,240)] text-[rgb(103,114,137)] focus:text-[rgb(26,26,26)] hover:bg-[rgb(217,220,225)] hover:border hover:border-[rgb(217,220,225)] active:text-[rgb(26,26,26)] active:border active:border-[rgb(225,225,225)] active:bg-white active:shadow-xs',
         light:
           'bg-white border-[rgb(225,225,255)] text-[rgb(26,26,26)] hover:text-[rgb(47,114,226)] shadow-xs',
+        active:
+          'text-[rgb(26,26,26)] border border-[rgb(225,225,225)] bg-white shadow-xs',
       },
     },
     defaultVariants: {
