@@ -25,7 +25,8 @@ interface Props {
 }
 
 export default function PageBar({ initialPages }: Props) {
-  const { pages, setPages } = useAppContext();
+  const { pages, setPages, highlightedPageId, setHighlightedPageId } =
+    useAppContext();
   const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
   const [isDragging, setIsDragging] = useState(false);
 
@@ -33,10 +34,16 @@ export default function PageBar({ initialPages }: Props) {
     setPages(initialPages);
   }, [initialPages, setPages]);
 
+  // Limpia el resaltado después de 2 segundos
+  useEffect(() => {
+    if (highlightedPageId) {
+      const timeout = setTimeout(() => setHighlightedPageId(null), 300); // Animation lasts for 300ms.
+      return () => clearTimeout(timeout);
+    }
+  }, [highlightedPageId, setHighlightedPageId]);
+
   const barItemsWithAddPage = useMemo(() => {
     const items: ReactNode[] = [];
-
-    // Assign proper index to draggable items
     let idx = 0;
     let pidx = 0;
     while (pages.length) {
@@ -45,6 +52,7 @@ export default function PageBar({ initialPages }: Props) {
           index={pidx + idx}
           key={pages[pidx].id}
           id={pages[pidx].id}
+          isHighlighted={highlightedPageId === pages[pidx].id}
         >
           {pages[pidx].label}
         </PageBarItem>
@@ -61,9 +69,8 @@ export default function PageBar({ initialPages }: Props) {
       idx++;
       pidx++;
     }
-
     return items;
-  }, [pages]);
+  }, [pages, highlightedPageId]);
 
   const activePage = pages.find((p) => p.id === activeId);
 
@@ -77,7 +84,7 @@ export default function PageBar({ initialPages }: Props) {
     >
       <SortableContext items={pages} strategy={horizontalListSortingStrategy}>
         <div className='border border-gray-200 bg-[rgb(249,250,251)]  rounded-lg'>
-          <div className='foo flex py-4 px-5 relative'>
+          <div className='flex py-4 px-5 relative'>
             {/* Dashed line */}
             <div className='absolute top-1/2 left-5 right-5 h-px border-t border-dashed border-[rgb(192,192,192)] z-0'></div>
 
@@ -91,18 +98,22 @@ export default function PageBar({ initialPages }: Props) {
       </SortableContext>
       <DragOverlay>
         {isDragging && activePage && activeId ? (
-          <PageBarItem id={activePage.id}>{activePage.label}</PageBarItem>
+          <PageBarItem index={-1} id={activePage.id}>
+            {activePage.label}
+          </PageBarItem>
         ) : null}
       </DragOverlay>
     </DndContext>
   );
 
   function handleAddPageClick() {
+    const id = Number(`${Date.now()}${Math.floor(Math.random() * 1000)}`);
     setPages((p) => {
-      const id = Number(`${Date.now()}${Math.floor(Math.random() * 1000)}`);
       const newPage = { id: id, label: 'Other' };
       return [...p, newPage];
     });
+
+    setHighlightedPageId(id);
   }
 
   function handleDragStart(event: DragStartEvent) {

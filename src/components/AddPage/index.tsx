@@ -4,7 +4,7 @@ import useAppContext from '../../hooks/useAppContext';
 import { cx } from 'class-variance-authority';
 
 export default function AddPage({ index, at }: { at: number; index: number }) {
-  const { setPages } = useAppContext();
+  const { setPages, setHighlightedPageId } = useAppContext();
   const parentRef = useRef<HTMLDivElement>(null);
   const [isHovered, setHovered] = useState(false); // Controls visibility
   const [hiding, setHiding] = useState(false);
@@ -80,13 +80,15 @@ export default function AddPage({ index, at }: { at: number; index: number }) {
   );
 
   function handleOnClick(e: MouseEvent<HTMLButtonElement>) {
+    // Prevents multiple submissions.
     e.currentTarget.blur();
+
     // Remove immediately to avoid flicker after the page has been added
     setHovered(false);
     setHiding(true);
 
+    const id = Number(`${Date.now()}${Math.floor(Math.random() * 1000)}`);
     setPages((p) => {
-      const id = Number(`${Date.now()}${Math.floor(Math.random() * 1000)}`);
       const newPage = { id: id, label: 'Other' };
 
       // Insert newPage after the index 'at'
@@ -96,5 +98,6 @@ export default function AddPage({ index, at }: { at: number; index: number }) {
         ...p.slice(at + 1), // Elements from at+1 to end
       ];
     });
+    setHighlightedPageId(id);
   }
 }

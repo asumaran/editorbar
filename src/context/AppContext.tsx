@@ -15,6 +15,8 @@ export interface Page {
 interface AppContextType {
   pages: Page[];
   setPages: Dispatch<SetStateAction<Page[]>>;
+  highlightedPageId: UniqueIdentifier | null;
+  setHighlightedPageId: Dispatch<SetStateAction<UniqueIdentifier | null>>;
 }
 
 interface AppProviderProps {
@@ -26,10 +28,14 @@ export const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export function AppProvider({ children }: AppProviderProps) {
   const [pages, setPages] = useState<Page[]>([]);
-  // Define your context state and functions here
+  const [highlightedPageId, setHighlightedPageId] =
+    useState<UniqueIdentifier | null>(null);
+
   const contextValue: AppContextType = {
-    pages: pages,
-    setPages: setPages,
+    pages,
+    setPages,
+    highlightedPageId,
+    setHighlightedPageId,
   };
 
   return (

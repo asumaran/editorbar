@@ -30,9 +30,15 @@ interface Props {
   children: ReactNode;
   id: UniqueIdentifier;
   index: number;
+  isHighlighted?: boolean;
 }
 
-export default function PageBarItem({ children, id, index }: Props) {
+export default function PageBarItem({
+  children,
+  id,
+  index,
+  isHighlighted,
+}: Props) {
   const [isActive, setIsActive] = useState(false);
   const buttonRef = useRef<HTMLElement>(null);
 
@@ -50,7 +56,6 @@ export default function PageBarItem({ children, id, index }: Props) {
   } = useSortable({ id, animateLayoutChanges });
 
   function handleOnContextMenu(e: MouseEvent<HTMLButtonElement>) {
-    console.log('context menu');
     e.preventDefault();
     e.stopPropagation();
     setIsActive(true);
@@ -114,18 +119,44 @@ export default function PageBarItem({ children, id, index }: Props) {
     '--index': index,
   } as React.CSSProperties;
 
+  // State for background animation
+  const [highlightStage, setHighlightStage] = useState<'none' | 'dark'>('none');
+
+  // Animate background when highlighted
+  useEffect(() => {
+    if (isHighlighted) {
+      setHighlightStage('dark');
+      const toNone = setTimeout(() => setHighlightStage('none'), 300);
+      return () => {
+        clearTimeout(toNone);
+      };
+    } else {
+      setHighlightStage('none');
+    }
+  }, [isHighlighted]);
+
   return (
     <DropdownMenu.Root open={isActive} onOpenChange={setIsActive}>
       <div
         ref={combinedRef}
-        className='PageBarItemWrapper origin-top-left'
+        className={cx(
+          'PageBarItemWrapper origin-top-left',
+          isDragging ? 'opacity-0 z-0' : ''
+        )}
         style={style}
       >
         <DropdownMenu.Trigger asChild>
           <Button
             {...attributes}
-            {...modifiedListeners} // Use modified listeners
-            className={cx(isDragging ? 'opacity-0 z-0' : '')}
+            {...modifiedListeners}
+            className={cx(
+              'transition-colors duration-500',
+              isDragging && 'opacity-0 z-0',
+              highlightStage === 'dark' && 'bg-gray-300 border-b-gray-300'
+            )}
+            style={{
+              willChange: 'background-color',
+            }}
             id={String(id)}
             key={id}
             onContextMenu={handleOnContextMenu}
