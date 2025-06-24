@@ -4,13 +4,7 @@ import {
   useSortable,
   type AnimateLayoutChanges,
 } from '@dnd-kit/sortable';
-import {
-  useEffect,
-  useRef,
-  useState,
-  type MouseEvent,
-  type ReactNode,
-} from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import type { UniqueIdentifier } from '@dnd-kit/core';
 import {
   Clipboard,
@@ -41,8 +35,9 @@ export default function PageBarItem({
   isHighlighted = false,
 }: PageBarItemProps) {
   const { deletePage } = useAppContext();
-  const [isActive, setIsActive] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const buttonRef = useRef<HTMLElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
 
   // This is used to animate insert/delete items
   const animateLayoutChanges: AnimateLayoutChanges = (args) =>
@@ -57,35 +52,20 @@ export default function PageBarItem({
     isDragging,
   } = useSortable({ id, animateLayoutChanges });
 
-  function handleOnContextMenu(e: MouseEvent<HTMLButtonElement>) {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsActive(true);
-  }
-
   function handleDeletePage() {
-    // Close the dropdown menu
-    setIsActive(false);
     // Delete the page using the context action
+    // Radix UI will close the dropdown automatically when item is clicked
     deletePage(id);
   }
 
-  useEffect(() => {
-    function handleClickOutside(event: Event) {
-      if (
-        buttonRef.current &&
-        !buttonRef.current.contains(event.target as Node)
-      ) {
-        setIsActive(false);
-      }
-    }
+  function handleContextMenu(e: React.MouseEvent<HTMLButtonElement>) {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDropdownOpen(true);
+  }
 
-    if (isActive) {
-      document.addEventListener('mousedown', handleClickOutside);
-      return () =>
-        document.removeEventListener('mousedown', handleClickOutside);
-    }
-  }, [isActive]);
+  // Let Radix UI handle dropdown closing automatically
+  // No need for manual click outside handling
 
   const combinedRef = (node: HTMLElement | null) => {
     // Set the dnd-kit ref
@@ -104,11 +84,16 @@ export default function PageBarItem({
       }
     }
 
-    // Prevent Radix UI from opening the menu on any click
-    // This is a workaround for the conflict between radix and dndkit
-    // both use the pointer down event to open/drag the button
-    e.preventDefault();
-    e.stopPropagation();
+    // For right clicks, prevent Radix UI from handling it automatically
+    if (e.button === 2) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+
+    // For all other interactions, let them pass through but prevent dropdown
+    if (e.button !== 2 && isDropdownOpen) {
+      setIsDropdownOpen(false);
+    }
   };
 
   // Create modified listeners with controlled pointer events
@@ -146,51 +131,58 @@ export default function PageBarItem({
   }, [isHighlighted]);
 
   return (
-    <DropdownMenu.Root open={isActive} onOpenChange={setIsActive}>
+    <DropdownMenu.Root open={isDropdownOpen} onOpenChange={setIsDropdownOpen}>
       <div
         ref={combinedRef}
         className={cx(
-          'PageBarItemWrapper origin-top-left',
+          'PageBarItemWrapper origin-top-left relative',
           isDragging ? 'opacity-0 z-0' : ''
         )}
         style={style}
       >
-        <DropdownMenu.Trigger asChild>
-          <Button
-            {...attributes}
-            {...modifiedListeners}
-            className={cx(
-              // Base transitions and animations
-              'transition-colors duration-500',
-              // Dragging states
-              isDragging && 'opacity-0 z-0',
-              // Highlight state with important to override variant styles
-              highlightStage === 'highlighted' && '!bg-[rgb(217,220,225)]'
-            )}
-            id={String(id)}
-            onContextMenu={handleOnContextMenu}
-            onPointerDown={handlePointerDown}
-            variant={isActive ? 'active' : 'default'}
-            aria-label={`Page ${children}${isActive ? ', menu open' : ''}`}
-            aria-describedby={isActive ? `menu-${id}` : undefined}
-            type='button'
-          >
-            <FileText
-              color={isActive ? 'rgb(245,157,14)' : 'currentColor'}
-              width={15}
-              aria-hidden='true'
-            />
-            <span>{children}</span>
-            {isActive && (
-              <EllipsisVertical
-                width={16}
-                height={16}
-                color='#9DA4B2'
-                aria-hidden='true'
-              />
-            )}
-          </Button>
-        </DropdownMenu.Trigger>
+        {/* Invisible trigger positioned exactly where the button is */}
+        <DropdownMenu.Trigger
+          ref={triggerRef}
+          className='absolute inset-0 opacity-0 pointer-events-none z-[-1]'
+          tabIndex={-1}
+          aria-hidden='true'
+        />
+
+        {/* Main button - completely separate from dropdown trigger */}
+        <Button
+          {...attributes}
+          {...modifiedListeners}
+          className={cx(
+            // Base transitions and animations
+            'transition-colors duration-500',
+            // Dragging states
+            isDragging && 'opacity-0 z-0',
+            // Highlight state with important to override variant styles
+            highlightStage === 'highlighted' && '!bg-[rgb(217,220,225)]'
+          )}
+          id={String(id)}
+          onPointerDown={handlePointerDown}
+          onContextMenu={handleContextMenu}
+          variant={isDropdownOpen ? 'active' : 'default'}
+          aria-label={`Page ${children}. Right-click for options${
+            isDropdownOpen ? ', menu open' : ''
+          }`}
+          aria-expanded={isDropdownOpen}
+          type='button'
+        >
+          <FileText
+            color={isDropdownOpen ? 'rgb(245,157,14)' : 'currentColor'}
+            width={15}
+            aria-hidden='true'
+          />
+          <span>{children}</span>
+          <EllipsisVertical
+            width={16}
+            height={16}
+            color={isDropdownOpen ? 'rgb(245,157,14)' : '#9DA4B2'}
+            aria-hidden='true'
+          />
+        </Button>
       </div>
       <DropdownMenu.Portal>
         <DropdownMenu.Content

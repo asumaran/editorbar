@@ -90,16 +90,20 @@ function appReducer(state: AppState, action: AppAction): AppState {
       };
     }
 
-    case 'DELETE_PAGE':
+    case 'DELETE_PAGE': {
+      const filteredPages = state.pages.filter(
+        (page) => page.id !== action.payload.id
+      );
       return {
         ...state,
-        pages: state.pages.filter((page) => page.id !== action.payload.id),
+        pages: filteredPages,
         // Clear highlight if the deleted page was highlighted
         highlightedPageId:
           state.highlightedPageId === action.payload.id
             ? null
             : state.highlightedPageId,
       };
+    }
 
     case 'REORDER_PAGES': {
       const { activeId, overId } = action.payload;
