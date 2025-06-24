@@ -8,6 +8,22 @@ interface AddPageProps {
   at: number;
 }
 
+/**
+ * AddPage component that renders a "+" button for adding new pages at specific positions
+ *
+ * This component appears between existing pages and provides a way to insert new pages
+ * at precise locations in the page list. It features:
+ * - Hover/focus effects with delayed visibility to prevent flickering
+ * - Keyboard accessibility
+ * - Visual feedback during interaction
+ * - Automatic cleanup of timers to prevent memory leaks
+ *
+ * The component uses a timeout-based approach to manage visibility states,
+ * ensuring smooth UX when users move between adjacent add buttons.
+ *
+ * @param index - The visual index position for styling and animations
+ * @param at - The array index where the new page should be inserted
+ */
 export default function AddPage({ index, at }: AddPageProps) {
   const { addPage } = useAppContext();
   const [isVisible, setIsVisible] = useState(false);

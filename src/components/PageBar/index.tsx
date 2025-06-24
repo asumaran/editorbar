@@ -23,6 +23,20 @@ interface PageBarProps {
   initialPages: Page[];
 }
 
+/**
+ * PageBar component that renders a horizontal list of draggable pages with add buttons
+ *
+ * This is the main component that orchestrates the page management UI. It provides:
+ * - Drag and drop functionality for reordering pages
+ * - Add page buttons between existing pages and at the end
+ * - Visual feedback for page highlighting and drag operations
+ * - Context menu access for each page
+ *
+ * The component uses @dnd-kit for drag and drop functionality and manages
+ * the visual state of drag operations with overlays and animations.
+ *
+ * @param initialPages - Array of pages to initialize the component with
+ */
 export default function PageBar({ initialPages }: PageBarProps) {
   const {
     pages,

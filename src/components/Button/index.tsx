@@ -1,6 +1,12 @@
 import { cva, cx, type VariantProps } from 'class-variance-authority';
 import type { ComponentProps, ReactNode } from 'react';
 
+/**
+ * Button component variants using class-variance-authority
+ *
+ * Defines the visual styles for different button states and variants.
+ * Uses Tailwind classes for consistent styling across the application.
+ */
 const buttonVariants = cva(
   // Base button styles
   [
@@ -45,6 +51,23 @@ interface ButtonProps extends VariantProps<typeof buttonVariants> {
 
 type ButtonComponentProps = ButtonProps & ComponentProps<'button'>;
 
+/**
+ * Reusable Button component with multiple visual variants
+ *
+ * This component provides a consistent button interface across the application
+ * with built-in accessibility features, focus management, and visual states.
+ *
+ * Features:
+ * - Multiple visual variants (default, light, active)
+ * - Focus ring and keyboard navigation support
+ * - Consistent spacing and typography
+ * - Flexible content via children prop
+ *
+ * @param variant - Visual style variant for the button
+ * @param children - Content to render inside the button
+ * @param className - Additional CSS classes to apply
+ * @param props - Additional HTML button properties
+ */
 export default function Button({
   className,
   variant,

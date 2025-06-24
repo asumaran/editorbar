@@ -28,6 +28,24 @@ interface PageBarItemProps {
   isHighlighted?: boolean;
 }
 
+/**
+ * PageBarItem represents an individual page in the page bar
+ *
+ * This component handles:
+ * - Drag and drop functionality for reordering
+ * - Right-click context menu with page operations
+ * - Visual states (highlighted, dragging, active)
+ * - Accessibility features and ARIA attributes
+ *
+ * The component integrates @dnd-kit for drag operations and Radix UI for
+ * the dropdown menu. It carefully manages event handling to ensure proper
+ * coordination between drag operations and context menu triggers.
+ *
+ * @param children - The page label/content to display
+ * @param id - Unique identifier for the page
+ * @param index - Position index for animations and sorting
+ * @param isHighlighted - Whether this page should show highlight animation
+ */
 export default function PageBarItem({
   children,
   id,
@@ -64,9 +82,19 @@ export default function PageBarItem({
     setIsDropdownOpen(true);
   }
 
-  // Let Radix UI handle dropdown closing automatically
-  // No need for manual click outside handling
-
+  /**
+   * Complex event handler that coordinates between drag-and-drop and context menu functionality
+   *
+   * This function manages the delicate balance between:
+   * - @dnd-kit's drag functionality (left click + drag)
+   * - Radix UI's dropdown trigger (right click)
+   * - Preventing unintended interactions between the two
+   *
+   * The logic ensures that:
+   * - Right clicks (button 2) open the context menu and prevent drag
+   * - Left clicks enable drag functionality when not right-clicking
+   * - The dropdown closes when interacting with drag operations
+   */
   const combinedRef = (node: HTMLElement | null) => {
     // Set the dnd-kit ref
     setNodeRef(node);
