@@ -26,7 +26,7 @@ import { cx } from 'class-variance-authority';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import DropdownItem from '../DropdownItem';
 
-interface Props {
+interface PageBarItemProps {
   children: ReactNode;
   id: UniqueIdentifier;
   index: number;
@@ -37,8 +37,8 @@ export default function PageBarItem({
   children,
   id,
   index,
-  isHighlighted,
-}: Props) {
+  isHighlighted = false,
+}: PageBarItemProps) {
   const [isActive, setIsActive] = useState(false);
   const buttonRef = useRef<HTMLElement>(null);
 
@@ -102,12 +102,11 @@ export default function PageBarItem({
     e.stopPropagation();
   };
 
-  // Create modified listeners without onPointerDown and onMouseDown
-  const modifiedListeners = {
-    ...listeners,
-    onPointerDown: undefined,
-    onMouseDown: undefined,
-  };
+  // Create modified listeners with controlled pointer events
+  // We handle onPointerDown manually in handlePointerDown
+  // to coordinate between dnd-kit and Radix UI
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { onPointerDown, onMouseDown, ...modifiedListeners } = listeners || {};
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -152,28 +151,33 @@ export default function PageBarItem({
             {...attributes}
             {...modifiedListeners}
             className={cx(
+              // Base transitions and animations
               'transition-colors duration-500',
+              // Dragging states
               isDragging && 'opacity-0 z-0',
+              // Highlight state with important to override variant styles
               highlightStage === 'highlighted' && '!bg-[rgb(217,220,225)]'
             )}
             id={String(id)}
-            key={id}
             onContextMenu={handleOnContextMenu}
             onPointerDown={handlePointerDown}
             variant={isActive ? 'active' : 'default'}
+            aria-label={`Page ${children}${isActive ? ', menu open' : ''}`}
+            aria-describedby={isActive ? `menu-${id}` : undefined}
+            type='button'
           >
             <FileText
-              key={1}
               color={isActive ? 'rgb(245,157,14)' : 'currentColor'}
               width={15}
+              aria-hidden='true'
             />
-            <span key={2}>{children}</span>
+            <span>{children}</span>
             {isActive && (
               <EllipsisVertical
-                key={3}
                 width={16}
                 height={16}
                 color='#9DA4B2'
+                aria-hidden='true'
               />
             )}
           </Button>

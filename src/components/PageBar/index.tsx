@@ -20,11 +20,11 @@ import type { Page } from '../../context/AppContext';
 import AddPageButton from '../AddPageButton';
 import PageBarItem from '../PageBarItem';
 
-interface Props {
+interface PageBarProps {
   initialPages: Page[];
 }
 
-export default function PageBar({ initialPages }: Props) {
+export default function PageBar({ initialPages }: PageBarProps) {
   const { pages, setPages, highlightedPageId, setHighlightedPageId } =
     useAppContext();
   const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
