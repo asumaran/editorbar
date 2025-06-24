@@ -1,17 +1,21 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 @import 'tailwindcss';
 
-body {
-  font-family: 'Inter Light', sans-serif; /* TODO: Reference webfont later */
-  font-size: 14px;
-  color: #1a1a1a;
-}
-
-.PageBarItemWrapper {
-  transform: translate3d(var(--translate-x, 0), var(--translate-y, 0), 0)
-    scaleX(var(--scale-x, 1)) scaleY(var(--scale-y, 1));
-}
-
 @layer base {
+  :root {
+    --font-sans: 'Inter', sans-serif;
+  }
+
+  html {
+    font-family: var(--font-sans);
+  }
+
+  body {
+    font-size: 14px;
+    color: #1a1a1a;
+  }
+
+  /* Button cursor styles */
   button,
   [role='button'] {
     cursor: pointer;
