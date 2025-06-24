@@ -1,9 +1,9 @@
 import { Plus } from 'lucide-react';
-import { useRef, useState } from 'react';
+import { useRef, useState, type MouseEvent } from 'react';
 import useAppContext from '../../hooks/useAppContext';
 import { cx } from 'class-variance-authority';
 
-export default function AddPage({ at }: { at: number }) {
+export default function AddPage({ index, at }: { at: number; index: number }) {
   const { setPages } = useAppContext();
   const parentRef = useRef<HTMLDivElement>(null);
   const [isHovered, setHovered] = useState(false); // Controls visibility
@@ -50,9 +50,14 @@ export default function AddPage({ at }: { at: number }) {
 
   return (
     <div
+      style={
+        {
+          '--index': index, // just in case.
+        } as React.CSSProperties
+      }
       className={cx(
         'flex items-center justify-center group px-2.5 transition-[width] duration-500 ease-out  ',
-        isHovered ? ' onHover w-[56px]' : 'w-0',
+        isHovered ? 'onHover w-[56px]' : 'w-0',
         hiding ? ' onHide ' : 'w-0'
       )}
       ref={parentRef}
@@ -74,7 +79,8 @@ export default function AddPage({ at }: { at: number }) {
     </div>
   );
 
-  function handleOnClick() {
+  function handleOnClick(e: MouseEvent<HTMLButtonElement>) {
+    e.currentTarget.blur();
     // Remove immediately to avoid flicker after the page has been added
     setHovered(false);
     setHiding(true);

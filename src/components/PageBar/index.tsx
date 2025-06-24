@@ -3,6 +3,7 @@ import {
   closestCenter,
   DndContext,
   DragOverlay,
+  MeasuringStrategy,
   type DragEndEvent,
   type DragStartEvent,
   type UniqueIdentifier,
@@ -35,16 +36,31 @@ export default function PageBar({ initialPages }: Props) {
   const barItemsWithAddPage = useMemo(() => {
     const items: ReactNode[] = [];
 
-    pages.forEach((page, index) => {
-      // Add the PageBarItem
+    // Assign proper index to draggable items
+    let idx = 0;
+    let pidx = 0;
+    while (pages.length) {
       items.push(
-        <PageBarItem key={page.id} id={page.id}>
-          {page.label}
+        <PageBarItem
+          index={pidx + idx}
+          key={pages[pidx].id}
+          id={pages[pidx].id}
+        >
+          {pages[pidx].label}
         </PageBarItem>
       );
 
-      items.push(<AddPage at={index} key={`addpage-${index}`} />);
-    });
+      items.push(
+        <AddPage index={pidx + idx + 1} at={pidx} key={`addpage-${idx}`} />
+      );
+
+      if (pidx + 1 === pages.length) {
+        break;
+      }
+
+      idx++;
+      pidx++;
+    }
 
     return items;
   }, [pages]);
@@ -57,6 +73,7 @@ export default function PageBar({ initialPages }: Props) {
       onDragEnd={handleDragEnd}
       onDragStart={handleDragStart}
       collisionDetection={closestCenter}
+      measuring={{ droppable: { strategy: MeasuringStrategy.Always } }}
     >
       <SortableContext items={pages} strategy={horizontalListSortingStrategy}>
         <div className='border border-gray-200 bg-[rgb(249,250,251)]  rounded-lg'>

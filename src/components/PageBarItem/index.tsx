@@ -29,13 +29,14 @@ import DropdownItem from '../DropdownItem';
 interface Props {
   children: ReactNode;
   id: UniqueIdentifier;
+  index: number;
 }
 
-export default function PageBarItem({ children, id }: Props) {
+export default function PageBarItem({ children, id, index }: Props) {
   const [isActive, setIsActive] = useState(false);
-  const buttonRef = useRef<HTMLButtonElement>(null);
+  const buttonRef = useRef<HTMLElement>(null);
 
-  // TODO: This might be used to animate insert/delete items
+  // This is used to animate insert/delete items
   const animateLayoutChanges: AnimateLayoutChanges = (args) =>
     defaultAnimateLayoutChanges({ ...args, wasDragging: true });
 
@@ -47,8 +48,6 @@ export default function PageBarItem({ children, id }: Props) {
     transition,
     isDragging,
   } = useSortable({ id, animateLayoutChanges });
-
-  const style = { transform: CSS.Transform.toString(transform), transition };
 
   function handleOnContextMenu(e: MouseEvent<HTMLButtonElement>) {
     console.log('context menu');
@@ -74,62 +73,76 @@ export default function PageBarItem({ children, id }: Props) {
     }
   }, [isActive]);
 
-  const combinedRef = (node: HTMLButtonElement | null) => {
+  const combinedRef = (node: HTMLElement | null) => {
     // Set the dnd-kit ref
     setNodeRef(node);
     // Set our own ref for positioning
     buttonRef.current = node;
   };
 
-  // Combinar los listeners de dnd-kit con control personalizado
+  // Combine dnd-kit listeners with custom control
   const handlePointerDown = (e: React.PointerEvent<HTMLButtonElement>) => {
-    // Solo permitir que dnd-kit maneje el evento si no es click derecho
+    // Only allow dnd-kit to handle the event if it's not a right click
     if (e.button !== 2) {
-      // Llamar al listener de dnd-kit si existe
+      // Call dnd-kit listener if it exists
       if (listeners?.onPointerDown) {
         listeners.onPointerDown(e);
       }
     }
 
-    // Prevenir que Radix UI abra el menú en cualquier click
-    // Esto es una salida al conflicto entre radix y dndkit
-    // ambos usan el evento pointer down para abrir/arrastrar el boton
-    console.log('pasa por aca');
+    // Prevent Radix UI from opening the menu on any click
+    // This is a workaround for the conflict between radix and dndkit
+    // both use the pointer down event to open/drag the button
     e.preventDefault();
     e.stopPropagation();
   };
 
-  // Crear listeners modificados sin onPointerDown y onMouseDown
+  // Create modified listeners without onPointerDown and onMouseDown
   const modifiedListeners = {
     ...listeners,
     onPointerDown: undefined,
     onMouseDown: undefined,
   };
 
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition: transition,
+    '--translate-x': transform ? `${Math.round(transform.x)}px` : undefined,
+    '--translate-y': transform ? `${Math.round(transform.y)}px` : undefined,
+    '--scale-x': transform?.scaleX ? `${transform.scaleX}` : undefined,
+    '--scale-y': transform?.scaleY ? `${transform.scaleY}` : undefined,
+    '--index': index,
+  } as React.CSSProperties;
+
   return (
     <DropdownMenu.Root open={isActive} onOpenChange={setIsActive}>
-      <DropdownMenu.Trigger asChild>
-        <Button
-          {...attributes}
-          {...modifiedListeners} // Usar listeners modificados
-          className={cx(isDragging ? 'opacity-0 z-0' : '')}
-          id={String(id)}
-          key={id}
-          onContextMenu={handleOnContextMenu}
-          ref={combinedRef}
-          style={style}
-          onPointerDown={handlePointerDown} // Handler personalizado
-        >
-          <FileText
-            color={isActive ? 'rgb(245,157,14)' : 'currentColor'}
-            width={15}
-          />
-          <span>{children}</span>
-          <span className={isActive ? 'block' : 'hidden'}>
-            <EllipsisVertical width={16} height={16} color='#9DA4B2' />
-          </span>
-        </Button>
-      </DropdownMenu.Trigger>
+      <div
+        ref={combinedRef}
+        className='PageBarItemWrapper origin-top-left'
+        style={style}
+      >
+        <DropdownMenu.Trigger asChild>
+          <Button
+            {...attributes}
+            {...modifiedListeners} // Use modified listeners
+            className={cx(isDragging ? 'opacity-0 z-0' : '')}
+            id={String(id)}
+            key={id}
+            onContextMenu={handleOnContextMenu}
+            onPointerDown={handlePointerDown} // Custom handler
+          >
+            <FileText
+              key={1}
+              color={isActive ? 'rgb(245,157,14)' : 'currentColor'}
+              width={15}
+            />
+            <span key={2}>{children}</span>
+            <span key={3} className={isActive ? 'block' : 'hidden'}>
+              <EllipsisVertical width={16} height={16} color='#9DA4B2' />
+            </span>
+          </Button>
+        </DropdownMenu.Trigger>
+      </div>
       <DropdownMenu.Portal>
         <DropdownMenu.Content
           className="rounded-xl shadow-xs overflow-hidden bg-white border border-[#e5e7eb] min-w-[220px] duration-[0.6s] ease-out data-[side='top']:animate-[slideDownAndFade_0.6s_ease-out]"

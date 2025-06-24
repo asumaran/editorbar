@@ -6,12 +6,9 @@ body {
   color: #1a1a1a;
 }
 
-.add-page .add-page-inner {
-  display: none;
-}
-
-.add-page.onHover .add-page-inner {
-  display: block;
+.PageBarItemWrapper {
+  transform: translate3d(var(--translate-x, 0), var(--translate-y, 0), 0)
+    scaleX(var(--scale-x, 1)) scaleY(var(--scale-y, 1));
 }
 
 @layer base {
