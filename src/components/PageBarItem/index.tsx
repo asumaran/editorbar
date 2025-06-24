@@ -25,6 +25,7 @@ import Button from '../Button';
 import { cx } from 'class-variance-authority';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import DropdownItem from '../DropdownItem';
+import useAppContext from '../../hooks/useAppContext';
 
 interface PageBarItemProps {
   children: ReactNode;
@@ -39,6 +40,7 @@ export default function PageBarItem({
   index,
   isHighlighted = false,
 }: PageBarItemProps) {
+  const { deletePage } = useAppContext();
   const [isActive, setIsActive] = useState(false);
   const buttonRef = useRef<HTMLElement>(null);
 
@@ -59,6 +61,13 @@ export default function PageBarItem({
     e.preventDefault();
     e.stopPropagation();
     setIsActive(true);
+  }
+
+  function handleDeletePage() {
+    // Close the dropdown menu
+    setIsActive(false);
+    // Delete the page using the context action
+    deletePage(id);
   }
 
   useEffect(() => {
@@ -208,7 +217,7 @@ export default function PageBarItem({
               <Copy /> Duplicate
             </DropdownItem>
             <DropdownMenu.Separator className='h-px bg-[#e5e7eb] m-[5px]' />
-            <DropdownItem variant='danger'>
+            <DropdownItem variant='danger' onClick={handleDeletePage}>
               <Trash2 /> Delete
             </DropdownItem>
           </div>

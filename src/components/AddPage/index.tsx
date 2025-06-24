@@ -9,7 +9,7 @@ interface AddPageProps {
 }
 
 export default function AddPage({ index, at }: AddPageProps) {
-  const { setPages, setHighlightedPageId } = useAppContext();
+  const { addPage } = useAppContext();
   const [isVisible, setIsVisible] = useState(false);
   const timeoutRef = useRef<number | null>(null);
 
@@ -67,24 +67,9 @@ export default function AddPage({ index, at }: AddPageProps) {
     // Hide the button immediately to avoid flicker after the page has been added
     setIsVisible(false);
 
-    // Generate a unique ID using timestamp + random number
-    const id = `page-${Date.now()}-${Math.floor(Math.random() * 10000)}`;
-
-    setPages((prevPages) => {
-      const newPage = { id, label: 'New Page' };
-
-      // Insert newPage after the index 'at'
-      return [
-        ...prevPages.slice(0, at + 1), // Elements from 0 to at (inclusive)
-        newPage, // New page
-        ...prevPages.slice(at + 1), // Elements from at+1 to end
-      ];
-    });
-
-    // Use setTimeout to ensure the page is added to DOM before highlighting
-    setTimeout(() => {
-      setHighlightedPageId(id);
-    }, 0);
+    // Add new page using the context action
+    // The addPage function will handle ID generation, insertion at position 'at', and highlighting
+    addPage('New Page', at);
   }
 
   return (

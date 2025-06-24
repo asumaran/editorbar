@@ -9,7 +9,6 @@ import {
   type UniqueIdentifier,
 } from '@dnd-kit/core';
 import {
-  arrayMove,
   horizontalListSortingStrategy,
   SortableContext,
 } from '@dnd-kit/sortable';
@@ -25,14 +24,20 @@ interface PageBarProps {
 }
 
 export default function PageBar({ initialPages }: PageBarProps) {
-  const { pages, setPages, highlightedPageId, setHighlightedPageId } =
-    useAppContext();
+  const {
+    pages,
+    highlightedPageId,
+    dispatch,
+    addPageAtEnd,
+    reorderPages,
+    setHighlightedPageId,
+  } = useAppContext();
   const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
   const [isDragging, setIsDragging] = useState(false);
 
   useEffect(() => {
-    setPages(initialPages);
-  }, [initialPages, setPages]);
+    dispatch({ type: 'SET_PAGES', payload: initialPages });
+  }, [initialPages, dispatch]);
 
   // Clear the highlight after 2 seconds
   useEffect(() => {
@@ -107,13 +112,7 @@ export default function PageBar({ initialPages }: PageBarProps) {
   );
 
   function handleAddPageClick() {
-    const id = Number(`${Date.now()}${Math.floor(Math.random() * 1000)}`);
-    setPages((p) => {
-      const newPage = { id: id, label: 'Other' };
-      return [...p, newPage];
-    });
-
-    setHighlightedPageId(id);
+    addPageAtEnd('Other');
   }
 
   function handleDragStart(event: DragStartEvent) {
@@ -126,11 +125,7 @@ export default function PageBar({ initialPages }: PageBarProps) {
     const { active, over } = event;
 
     if (over !== null && active.id !== over.id) {
-      setPages((currentPages) => {
-        const oldIndex = currentPages.findIndex((p) => p.id === active.id);
-        const newIndex = currentPages.findIndex((p) => p.id === over.id);
-        return arrayMove(currentPages, oldIndex, newIndex);
-      });
+      reorderPages(active.id, over.id);
     }
 
     setIsDragging(false);
