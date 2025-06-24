@@ -34,7 +34,7 @@ export default function PageBar({ initialPages }: Props) {
     setPages(initialPages);
   }, [initialPages, setPages]);
 
-  // Limpia el resaltado después de 2 segundos
+  // Clear the highlight after 2 seconds
   useEffect(() => {
     if (highlightedPageId) {
       const timeout = setTimeout(() => setHighlightedPageId(null), 300); // Animation lasts for 300ms.

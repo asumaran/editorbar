@@ -120,15 +120,17 @@ export default function PageBarItem({
   } as React.CSSProperties;
 
   // State for background animation
-  const [highlightStage, setHighlightStage] = useState<'none' | 'dark'>('none');
+  const [highlightStage, setHighlightStage] = useState<'none' | 'highlighted'>(
+    'none'
+  );
 
   // Animate background when highlighted
   useEffect(() => {
     if (isHighlighted) {
-      setHighlightStage('dark');
-      const toNone = setTimeout(() => setHighlightStage('none'), 300);
+      setHighlightStage('highlighted');
+      const timer = setTimeout(() => setHighlightStage('none'), 600); // Longer duration for better UX
       return () => {
-        clearTimeout(toNone);
+        clearTimeout(timer);
       };
     } else {
       setHighlightStage('none');
@@ -152,11 +154,8 @@ export default function PageBarItem({
             className={cx(
               'transition-colors duration-500',
               isDragging && 'opacity-0 z-0',
-              highlightStage === 'dark' && 'bg-gray-300 border-b-gray-300'
+              highlightStage === 'highlighted' && '!bg-[rgb(217,220,225)]'
             )}
-            style={{
-              willChange: 'background-color',
-            }}
             id={String(id)}
             key={id}
             onContextMenu={handleOnContextMenu}
@@ -169,9 +168,14 @@ export default function PageBarItem({
               width={15}
             />
             <span key={2}>{children}</span>
-            <span key={3} className={isActive ? 'block' : 'hidden'}>
-              <EllipsisVertical width={16} height={16} color='#9DA4B2' />
-            </span>
+            {isActive && (
+              <EllipsisVertical
+                key={3}
+                width={16}
+                height={16}
+                color='#9DA4B2'
+              />
+            )}
           </Button>
         </DropdownMenu.Trigger>
       </div>
